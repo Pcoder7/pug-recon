@@ -48,7 +48,8 @@ jobs:
       - name: Run PugDns against your lists
         run: |
            export TERM=xterm  
-           cat navy_mil.txt | sed 's/$/.navy.mil/g' |sudo ./pugdns -interface eth0 -domains subdomains.txt -nameservers resolvers.txt  -retries 3 -workers 4 -output out.json
+           cat navy_mil.txt | sed 's/$/.navy.mil/g'> wordlist.txt
+           sudo "$GITHUB_WORKSPACE/pugdns" -interface eth0 -domains wordlist.txt -nameservers resolvers.txt  -retries 3 -workers 4 -output out.json
 
  
 
