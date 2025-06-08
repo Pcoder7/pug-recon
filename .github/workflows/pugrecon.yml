@@ -1,13 +1,11 @@
 name: SanicDNS CI
 
 on:
-  push:
-    paths:
-      - 'subdomains.txt'
-      - 'resolvers.txt'
-      
   workflow_dispatch:
 
+permissions:
+  contents: write
+      
 jobs:
   build-and-run:
     name: Build & Run SanicDNS
