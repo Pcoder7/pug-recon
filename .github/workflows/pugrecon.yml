@@ -1,4 +1,4 @@
-name: SanicDNS CI
+name: PugRecon
 
 on:
   workflow_dispatch:
