@@ -62,7 +62,7 @@ jobs:
         run: |
            export TERM=xterm  
            cat navy_mil.txt | sed 's/$/.navy.mil/g'> wordlist.txt
-           sudo bash -c "exec \"$GITHUB_WORKSPACE/pugdns\" -interface eth0 -domains wordlist.txt -nameservers resolvers.txt -retries 3 -workers 4 -output out.json"
+           sudo bash -c "exec \"$GITHUB_WORKSPACE/pugdns/pugdns\" -interface eth0 -domains wordlist.txt -nameservers resolvers.txt -retries 3 -workers 4 -output out.json"
      
       - name: Upload logs and output
         uses: actions/upload-artifact@v4
