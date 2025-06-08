@@ -41,7 +41,9 @@ jobs:
 
       - name: Verify installation
         run: |
-          which ./pugdns
+          echo "Current dir: $(pwd)"
+          ls -lh ./pugdns
+          realpath ./pugdns || readlink -f ./pugdns
           
       - name: Run PugDns against your lists
         run: |
