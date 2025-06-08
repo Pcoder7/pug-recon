@@ -1,0 +1,60 @@
+name: SanicDNS CI
+
+on:
+  push:
+    paths:
+      - 'subdomains.txt'
+      - 'resolvers.txt'
+      
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    name: Build & Run SanicDNS
+    runs-on: ubuntu-latest
+    env:
+      TERM: xterm    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          
+      - name: Install system dependencies
+        shell: bash
+        run: |
+          git clone https://github.com/c3l3si4n/pugdns
+          cd pugdns
+          sudo apt install linux-headers-$(uname -r) llvm libbpf-dev clang
+          sudo ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/asm
+          go generate && go build
+
+          
+      - name: Install ethtool & shrink NIC queues
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ethtool
+          # If eth0 doesn’t exist, adjust the interface name accordingly
+          sudo ethtool -L eth0 combined 3 || true          
+
+
+      - name: Verify installation
+        run: |
+          which pugdns
+          
+      - name: Run PugDns against your lists
+        run: |
+           cat navy_mil.txt | sed 's/$/.navy.mil/g' |sudo ./pugdns -interface eth0 -domains subdomains.txt -nameservers resolvers.txt  -retries 3 -workers 4 -output out.json
+
+ 
+
+      - name: Upload logs and output
+        uses: actions/upload-artifact@v4
+        with:
+          name: pugdns-results
+          path: |
+            out.json
+            
